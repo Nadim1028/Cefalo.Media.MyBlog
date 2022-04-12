@@ -1,0 +1,10 @@
+.vs/
+Cefalo.Media.MyBlog.sln
+Cefalo.Media.MyBlog/bin
+Cefalo.Media.MyBlog/obj
+Database/bin
+Database/obj
+Repositories/bin
+Repositories/obj
+Services/bin
+Services/obj

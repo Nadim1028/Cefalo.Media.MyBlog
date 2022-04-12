@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Database.Models
+{
+    public class Story
+    {
+        //Title, Body and PublishedDate
+
+        public int StoryId { get; set; }
+        public string StoryTitle { get; set; }
+        public string StoryBody { get; set; }
+        public DateTime PublishedDate { get; set; }
+
+        //foreign key
+        public int AuthorId { get; set; }
+
+        //nav prop
+        public Author  Author { get; set; }
+    }
+}
