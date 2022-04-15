@@ -13,7 +13,15 @@ namespace Services.Mapper
     {
         public BlogProfile()
         {
+            //CreateMap<StoryDTO, Story>().ForMember(dest =>
+            //dest.AuthorId,
+            //opt => opt.MapFrom(src => src.AuthorId)).ReverseMap();
+            //CreateMap<Story, StoryDTO>().ForMember(dest =>
+            //dest.AuthorId,
+            //opt => opt.MapFrom(src => src.AuthorId)).ReverseMap();
+
             CreateMap<Story, StoryDTO>().ReverseMap();
+            CreateMap<Author, AuthorDTO>().ReverseMap();
         }
        
     }

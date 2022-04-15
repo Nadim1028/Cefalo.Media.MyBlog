@@ -19,8 +19,8 @@ namespace Database.Models
 
         }
 
-        public DbSet<Story> Stories { get; set; }
-        public DbSet<Author> Authors { get; set; }
+        public DbSet<Story> StoryTable { get; set; }
+        public DbSet<Author> AuthorTable { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

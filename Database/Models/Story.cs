@@ -19,6 +19,7 @@ namespace Database.Models
         public int AuthorId { get; set; }
 
         //nav prop
-        public Author  Author { get; set; }
+        #nullable enable
+        public Author?  Author { get; set; }
     }
 }
