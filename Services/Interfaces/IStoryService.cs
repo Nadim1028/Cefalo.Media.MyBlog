@@ -13,7 +13,7 @@ namespace Services.Interfaces
         Task<bool> InsertStory(StoryDTO story);
         Task<IEnumerable<StoryDTO>> GetStories();
         Task<Story> GetStoryByID(int storyId);
-        Task<bool> DeleteStudent(int studentID);
-        Task<bool> UpdateStudent(Story story);
+        Task<bool> DeleteStory(int studentID);
+        Task<bool> UpdateStory(StoryDTO story);
     }
 }
