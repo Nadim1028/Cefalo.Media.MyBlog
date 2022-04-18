@@ -13,6 +13,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Database.Models;
+using Repositories.Interfaces;
+using Repositories;
+using Services.Interfaces;
+using Services;
 
 namespace Cefalo.Media.MyBlog
 {
@@ -32,7 +36,14 @@ namespace Cefalo.Media.MyBlog
             services.DatabaseConfigurationService(Configuration);
             services.CORSConfigurationServices();
             services.AddControllers();
+            services.AddAutoMapper(typeof(Startup));
             services.SwaggerConfigurationServices();
+
+            services.AddScoped<IStoryRepository, StoryRepository>();
+            services.AddScoped<IStoryService, StoryService>();
+            services.AddMvc();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
