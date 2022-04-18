@@ -18,6 +18,7 @@ using Repositories;
 using Services.Interfaces;
 using Services;
 using Services.Mapper;
+using System.Text.Json.Serialization;
 
 namespace Cefalo.Media.MyBlog
 {
@@ -33,11 +34,10 @@ namespace Cefalo.Media.MyBlog
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.DatabaseConfigurationService(Configuration);
             services.CORSConfigurationServices();
             services.AddControllers();
-           // services.AddMvc();
+            services.AddMvc();
             services.AddAutoMapper(typeof(BlogProfile));
             services.SwaggerConfigurationServices();
 
@@ -47,14 +47,26 @@ namespace Cefalo.Media.MyBlog
             services.AddScoped<IStoryService, StoryService>();
             services.AddScoped<IAuthorService, AuthorService>();
 
-            services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; });
-            services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; }).AddNewtonsoftJson();
-            services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; }).AddXmlDataContractSerializerFormatters();
-            services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; }).AddXmlSerializerFormatters();
-            //services.AddControllers(options =>
+
+
+            //services.AddControllers() .AddXmlSerializerFormatters();
+            //services.AddControllers().AddJsonOptions(options =>
             //{
-            //    options.RespectBrowserAcceptHeader = true;
-            //}).AddXmlSerializerFormatters();
+            //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            //});
+            //services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; });
+            //services.AddControllers().AddXmlDataContractSerializerFormatters();
+
+
+            services.AddControllers().AddXmlSerializerFormatters();
+            services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; });
+            services.AddControllers().AddJsonOptions(options =>
+            {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            });
+            
+            // services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; }).AddNewtonsoftJson();
+            services.AddControllers().AddXmlDataContractSerializerFormatters();
 
         }
 

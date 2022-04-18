@@ -48,9 +48,10 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteStory(int studentID)
+        public async Task<bool> DeleteStory(Story story)
         {
-            throw new NotImplementedException();
+             databaseContext.StoryTable.Remove(story);
+            return await databaseContext.SaveChangesAsync() >= 0;
         }
     }
 }

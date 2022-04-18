@@ -38,7 +38,9 @@ namespace Cefalo.Media.MyBlog.Controllers
         }
 
         [HttpPut]
-        [Consumes("application/xml")]
+       // [FormatFilter]
+        //[Consumes("application/xml")]
+        //[Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateStory([FromBody] StoryDTO storyDTO)
         {
             await storyService.UpdateStory(storyDTO);
