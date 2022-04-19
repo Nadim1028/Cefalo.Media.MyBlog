@@ -12,8 +12,8 @@ namespace Services.Interfaces
     {
         Task<bool> InsertStory(StoryDTO story);
         Task<IEnumerable<StoryDTO>> GetStories();
-        Task<Story> GetStoryByID(int storyId);
-        Task<bool> DeleteStory(int studentID);
+        Task<StoryDTO> GetStoryByID(int storyId);
+        Task<bool> DeleteStory(int storyId);
         Task<bool> UpdateStory(StoryDTO story);
     }
 }

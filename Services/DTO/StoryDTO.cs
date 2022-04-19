@@ -16,9 +16,6 @@ namespace Services.DTO
 
         public int AuthorId { get; set; }
 
-       // public int AuthorId { get; set; }
-        //  public  AuthorName { get; set; }
-
-        // public Author Author { get; set; }
+       
     }
 }

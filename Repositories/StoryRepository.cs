@@ -43,14 +43,17 @@ namespace Repositories
            return await databaseContext.SaveChangesAsync() >=0;
         }
 
-        public Task<Story> GetStoryByID(int storyId)
+        public async Task<Story> GetStoryByID(int storyId)
         {
-            throw new NotImplementedException();
+            //return await _dbContext.Stories  .AsNoTracking() .FirstOrDefaultAsync(story => story.Id == storyId);
+
+            return  await databaseContext.StoryTable.FirstOrDefaultAsync(x => x.StoryId == storyId);
         }
 
-        public async Task<bool> DeleteStory(Story story)
+        public async Task<bool> DeleteStory(int storyId)
         {
-             databaseContext.StoryTable.Remove(story);
+            var story = await GetStoryByID(storyId);
+            databaseContext.StoryTable.Remove(story);
             return await databaseContext.SaveChangesAsync() >= 0;
         }
     }

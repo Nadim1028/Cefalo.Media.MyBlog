@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Database.Models;
+using Microsoft.AspNetCore.Mvc;
 using Services.DTO;
 using Services.Interfaces;
 using System.Collections.Generic;
@@ -37,13 +38,26 @@ namespace Cefalo.Media.MyBlog.Controllers
             return Ok(stories);
         }
 
+        [HttpGet("{id:int}/{format?}")]
+
+        public async Task<IActionResult> GetStoryById(int id)
+        {
+            var story = await storyService.GetStoryByID(id);
+            return Ok(story);
+        }
+
         [HttpPut]
-       // [FormatFilter]
-        //[Consumes("application/xml")]
-        //[Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateStory([FromBody] StoryDTO storyDTO)
         {
             await storyService.UpdateStory(storyDTO);
+            return Ok(true);
+        }
+
+        [HttpDelete("{id:int}")]
+
+        public async  Task<IActionResult> DeleteStory(int id)
+        {
+            await storyService.DeleteStory(id);
             return Ok(true);
         }
 

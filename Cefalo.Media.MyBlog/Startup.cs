@@ -48,16 +48,6 @@ namespace Cefalo.Media.MyBlog
             services.AddScoped<IAuthorService, AuthorService>();
 
 
-
-            //services.AddControllers() .AddXmlSerializerFormatters();
-            //services.AddControllers().AddJsonOptions(options =>
-            //{
-            //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-            //});
-            //services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; });
-            //services.AddControllers().AddXmlDataContractSerializerFormatters();
-
-
             services.AddControllers().AddXmlSerializerFormatters();
             services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; });
             services.AddControllers().AddJsonOptions(options =>
@@ -79,7 +69,7 @@ namespace Cefalo.Media.MyBlog
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cefalo.Media.MyBlog v1"));
             }
-
+            app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
 
             app.UseRouting();
