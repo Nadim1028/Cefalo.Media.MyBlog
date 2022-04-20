@@ -24,9 +24,6 @@ namespace Database.Models
         #nullable enable
         public Author?  Author { get; set; }
 
-        public static explicit operator Story(Task<Story> v)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

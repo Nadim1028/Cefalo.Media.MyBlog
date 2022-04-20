@@ -22,6 +22,10 @@ namespace Services.Mapper
 
             CreateMap<Story, StoryDTO>().ReverseMap();
             CreateMap<Author, AuthorDTO>().ReverseMap();
+            CreateMap<Author, GetAuthorDTO>().ReverseMap();
+            CreateMap<Author, SignInAuthorDTO>().ReverseMap();
+            CreateMap<Author, SignUpAuthorDTO>().ReverseMap();
+            CreateMap<Author, UpdateAuthorDTO>().ReverseMap();
         }
        
     }

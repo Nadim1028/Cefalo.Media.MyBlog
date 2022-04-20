@@ -31,7 +31,7 @@ namespace Repositories
 
             foreach(var story in stories)
             {
-               databaseContext.Entry(story).Reference(s => s.Author).Load();
+               databaseContext.Entry(story).Reference(s => s.Author).Load();//explicit loading of navigational prop
             }
            
             return stories;
