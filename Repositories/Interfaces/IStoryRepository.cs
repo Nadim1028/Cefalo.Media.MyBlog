@@ -12,7 +12,8 @@ namespace Repositories.Interfaces
         Task<bool> InsertStory(Story story);
         Task<IEnumerable<Story>>  GetStories();
         Task<Story> GetStoryByID(int storyId);
-        Task<bool> DeleteStory(Story story);
+        Task<bool> DeleteStory(int storyId);
         Task<bool> UpdateStory(Story story);
+        //void DeleteStory(Task<Story> story);
     }
 }

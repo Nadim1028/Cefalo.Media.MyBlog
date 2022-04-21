@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace Database.Models
 {
-    //[Serializable]
-    //[DataContract(IsReference = true)]
+    
     public class Story
     {
         //Title, Body and PublishedDate
@@ -24,5 +23,10 @@ namespace Database.Models
         //nav prop
         #nullable enable
         public Author?  Author { get; set; }
+
+        public static explicit operator Story(Task<Story> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

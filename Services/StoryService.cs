@@ -59,16 +59,22 @@ namespace Services
             return dtoStories;
         }
 
-        public Task<Story> GetStoryByID(int storyId)
+        public async Task<StoryDTO> GetStoryByID(int storyId)
         {
-            throw new NotImplementedException();
+            var story = await repository.GetStoryByID(storyId);
+           StoryDTO storyDto = mapper.Map<StoryDTO>(story);
+            return storyDto;
         }
 
         
 
-        public Task<bool> DeleteStory(int studentID)
+        public async Task<bool> DeleteStory(int storyId)
         {
-            throw new NotImplementedException();
+          
+            //StoryDTO storyDto =  await GetStoryByID(storyId);
+            //var story = mapper.Map<Story>(storyDto);
+            return await repository.DeleteStory(storyId);
+
         }
 
     }
