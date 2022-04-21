@@ -22,6 +22,8 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Cefalo.Media.MyBlog
 {
@@ -50,7 +52,7 @@ namespace Cefalo.Media.MyBlog
 
             services.AddScoped<IStoryService, StoryService>();
             services.AddScoped<IAuthorService, AuthorService>();
-
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddControllers().AddXmlSerializerFormatters();
             services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; });
@@ -75,7 +77,6 @@ namespace Cefalo.Media.MyBlog
                         ValidateAudience = false,
                     };
                 });
-
         }                                                              
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,6 +94,8 @@ namespace Cefalo.Media.MyBlog
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+
 
             app.UseEndpoints(endpoints =>
             {

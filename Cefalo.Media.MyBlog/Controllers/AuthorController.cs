@@ -58,7 +58,18 @@ namespace Cefalo.Media.MyBlog.Controllers
             if (author == null)
                 return Unauthorized("Invalid username or password");
 
-            else
+            //else
+            //{
+            //    var token = tokenService.CreateToken(author);
+
+            //    return new AuthorDTO
+            //    {
+            //        AuthorId = author.AuthorId,
+            //        Token = token,
+            //        UserName = author.UserName
+            //    };
+            //}
+              else
                 return author;
         }
 

@@ -16,12 +16,14 @@ namespace Services
     {
         private readonly IAuthorRepository repository;
         private readonly IMapper mapper;
+        private readonly ITokenService tokenService;
 
 
-        public AuthorService(IAuthorRepository repository,IMapper mapper)
+        public AuthorService(IAuthorRepository repository,IMapper mapper, ITokenService tokenService)
         {
             this.repository = repository;
             this.mapper = mapper;
+            this.tokenService = tokenService;
         }
 
         public async Task<GetAuthorDTO> GetAuthorByID(int authorId)
@@ -68,8 +70,16 @@ namespace Services
                 var author= await repository.GetAuthorByUserName(signInAuthorDto.UserName);
                 var authorDTO = mapper.Map<AuthorDTO>(author);
 
+                var token = tokenService.CreateToken(author);
+
                 if (FindingSimilarityOfHashValue(author.Password, signInAuthorDto.Password))
-                    return authorDTO;
+                    return new AuthorDTO
+                    {
+                        AuthorId = author.AuthorId,
+                        Token = token,
+                        UserName = author.UserName
+                    };
+                //  return authorDTO;
                 else 
                     return null;      
             }

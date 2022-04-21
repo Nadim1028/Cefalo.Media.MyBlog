@@ -47,7 +47,7 @@ namespace Repositories
         {
             //return await _dbContext.Stories  .AsNoTracking() .FirstOrDefaultAsync(story => story.Id == storyId);
 
-            return  await databaseContext.StoryTable.FirstOrDefaultAsync(x => x.StoryId == storyId);
+            return  await databaseContext.StoryTable.AsNoTracking().FirstOrDefaultAsync(x => x.StoryId == storyId);
         }
 
         public async Task<bool> DeleteStory(int storyId)

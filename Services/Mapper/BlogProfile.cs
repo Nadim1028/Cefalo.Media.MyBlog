@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Database.Models;
 using Services.DTO;
+using Services.DTO.StoryDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,9 @@ namespace Services.Mapper
             //dest.AuthorId,
             //opt => opt.MapFrom(src => src.AuthorId)).ReverseMap();
 
-            CreateMap<Story, StoryDTO>().ReverseMap();
+            CreateMap<Story, UpdateStoryDto>().ReverseMap();
+            CreateMap<Story, CreateStoryDto>().ReverseMap();
+            CreateMap<Story, GetStoryDto>().ReverseMap();
             CreateMap<Author, AuthorDTO>().ReverseMap();
             CreateMap<Author, GetAuthorDTO>().ReverseMap();
             CreateMap<Author, SignInAuthorDTO>().ReverseMap();
