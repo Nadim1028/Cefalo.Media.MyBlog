@@ -1,4 +1,5 @@
 ﻿using Database.Models;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,30 +11,30 @@ namespace Repositories
 {
     public class StoryRepository : IStoryRepository
     {
-        private ApplicationContext context ;
-
-
+        private readonly ApplicationContext databaseContext ;
 
         public StoryRepository(ApplicationContext applicationContext)
         {
-            context = applicationContext;
+            databaseContext = applicationContext;
         }
 
         public async Task<bool> InsertStory(Story story)
         {
-          await context.Stories.AddAsync(story);
-          context.SaveChanges();
+          await databaseContext.StoryTable.AddAsync(story);
+          databaseContext.SaveChanges();
           return true;
         }
 
-        public Task<bool> DeleteStudent(int studentID)
+        public async Task<IEnumerable<Story>> GetStories()
         {
-            throw new NotImplementedException();
-        }
+            var stories = await databaseContext.StoryTable.OrderBy(story => story.StoryTitle).ToListAsync();
 
-        public Task<IEnumerable<Story>> GetStories()
-        {
-            throw new NotImplementedException();
+            foreach(var story in stories)
+            {
+                databaseContext.Entry(story).Reference(s => s.Author).Load();
+            }
+           
+            return stories;
         }
 
         public Task<Story> GetStoryByID(int storyId)
@@ -41,9 +42,12 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-      
-
         public Task<bool> UpdateStudent(Story story)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteStudent(int studentID)
         {
             throw new NotImplementedException();
         }

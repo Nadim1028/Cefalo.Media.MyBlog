@@ -17,6 +17,7 @@ using Repositories.Interfaces;
 using Repositories;
 using Services.Interfaces;
 using Services;
+using Services.Mapper;
 
 namespace Cefalo.Media.MyBlog
 {
@@ -36,13 +37,24 @@ namespace Cefalo.Media.MyBlog
             services.DatabaseConfigurationService(Configuration);
             services.CORSConfigurationServices();
             services.AddControllers();
-            services.AddAutoMapper(typeof(Startup));
+           // services.AddMvc();
+            services.AddAutoMapper(typeof(BlogProfile));
             services.SwaggerConfigurationServices();
 
             services.AddScoped<IStoryRepository, StoryRepository>();
-            services.AddScoped<IStoryService, StoryService>();
-            services.AddMvc();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
 
+            services.AddScoped<IStoryService, StoryService>();
+            services.AddScoped<IAuthorService, AuthorService>();
+
+            services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; });
+            services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; }).AddNewtonsoftJson();
+            services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; }).AddXmlDataContractSerializerFormatters();
+            services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; }).AddXmlSerializerFormatters();
+            //services.AddControllers(options =>
+            //{
+            //    options.RespectBrowserAcceptHeader = true;
+            //}).AddXmlSerializerFormatters();
 
         }
 

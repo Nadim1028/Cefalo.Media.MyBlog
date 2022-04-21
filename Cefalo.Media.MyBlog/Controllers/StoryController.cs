@@ -1,37 +1,41 @@
-﻿using AutoMapper;
-using Database.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Services.DTO;
 using Services.Interfaces;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cefalo.Media.MyBlog.Controllers
 {
+   
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("[controller]")]
+
     public class StoryController : Controller
     {
         private readonly IStoryService storyService;
-        private readonly IMapper mapper;
+        
 
-        public StoryController(IStoryService storyService, IMapper mapper)
+
+        public StoryController(IStoryService storyService)
         {
             this.storyService = storyService;
-            this.mapper = mapper;
+           
         }
 
 
-
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
-
         [HttpPost]
-        public async Task<IActionResult> CreateStory([FromBody] Story story)
+        public async Task<IActionResult> CreateStory([FromBody] StoryDTO storyDTO)
         {
-            await storyService.InsertStory(story);
-            return Ok(200);
+            await storyService.InsertStory(storyDTO);
+            return Created("", null);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<StoryDTO>>> GetAllStories()
+        {
+            
+            IEnumerable<StoryDTO> stories =  await storyService.GetStories();
+            return Ok(stories);
         }
 
     }

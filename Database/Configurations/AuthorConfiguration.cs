@@ -16,7 +16,7 @@ namespace Database.Configurations
         {
             builder.HasKey(author=>author.AuthorId);
             builder.Property(author => author.AuthorId).IsRequired();
-            builder.Property(author => author.AuthorName).IsRequired();
+            builder.Property(author => author.Name).IsRequired();
             builder.Property(author=>author.Email).IsRequired();
             builder.Property(author => author.Password).IsRequired().HasMaxLength(10);
             builder.Property(author => author.Addresss).IsRequired();
