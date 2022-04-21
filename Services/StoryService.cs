@@ -35,6 +35,12 @@ namespace Services
             return await repository.InsertStory(story);
         }
 
+        public async Task<bool> UpdateStory(StoryDTO createStoryDto)
+        {
+            var story = mapper.Map<Story>(createStoryDto);
+            return await repository.UpdateStory(story);
+        }
+
         public async Task<IEnumerable<StoryDTO>> GetStories()
         {
             //config = new MapperConfiguration(cfg => cfg.CreateMap<Story, StoryDTO>());
@@ -58,12 +64,9 @@ namespace Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateStudent(Story story)
-        {
-            throw new NotImplementedException();
-        }
+        
 
-        public Task<bool> DeleteStudent(int studentID)
+        public Task<bool> DeleteStory(int studentID)
         {
             throw new NotImplementedException();
         }

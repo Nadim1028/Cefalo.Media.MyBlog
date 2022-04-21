@@ -31,10 +31,16 @@ namespace Repositories
 
             foreach(var story in stories)
             {
-                databaseContext.Entry(story).Reference(s => s.Author).Load();
+               databaseContext.Entry(story).Reference(s => s.Author).Load();
             }
            
             return stories;
+        }
+
+        public async Task<bool> UpdateStory(Story story)
+        {
+           databaseContext.StoryTable.Update(story);
+           return await databaseContext.SaveChangesAsync() >=0;
         }
 
         public Task<Story> GetStoryByID(int storyId)
@@ -42,14 +48,10 @@ namespace Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateStudent(Story story)
+        public async Task<bool> DeleteStory(Story story)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteStudent(int studentID)
-        {
-            throw new NotImplementedException();
+             databaseContext.StoryTable.Remove(story);
+            return await databaseContext.SaveChangesAsync() >= 0;
         }
     }
 }

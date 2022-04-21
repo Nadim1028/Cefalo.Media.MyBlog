@@ -19,7 +19,6 @@ namespace Cefalo.Media.MyBlog.Controllers
         public StoryController(IStoryService storyService)
         {
             this.storyService = storyService;
-           
         }
 
 
@@ -36,6 +35,16 @@ namespace Cefalo.Media.MyBlog.Controllers
             
             IEnumerable<StoryDTO> stories =  await storyService.GetStories();
             return Ok(stories);
+        }
+
+        [HttpPut]
+       // [FormatFilter]
+        //[Consumes("application/xml")]
+        //[Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateStory([FromBody] StoryDTO storyDTO)
+        {
+            await storyService.UpdateStory(storyDTO);
+            return Ok(true);
         }
 
     }
