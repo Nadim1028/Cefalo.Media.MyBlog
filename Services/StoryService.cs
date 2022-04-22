@@ -54,12 +54,12 @@ namespace Services
             
         }
 
-        public async Task<IEnumerable<UpdateStoryDto>> GetStories()
+        public async Task<IEnumerable<UpdateStoryDto>> GetStories(PaginationFilter validFilter)
         {
             //config = new MapperConfiguration(cfg => cfg.CreateMap<Story, StoryDTO>());
             //mapper = config.CreateMapper();
 
-            IEnumerable<Story> stories = await repository.GetStories();
+            IEnumerable<Story> stories = await repository.GetStories(validFilter);
             
             foreach (Story s in stories)
             {
