@@ -9,12 +9,12 @@ namespace Cefalo.Media.MyBlog.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class AuthorController : Controller
+    public class AuthorsController : Controller
     {
         private readonly IAuthorService authorService;
         private readonly ITokenService tokenService;
 
-        public AuthorController(IAuthorService authorService, ITokenService tokenService)
+        public AuthorsController(IAuthorService authorService, ITokenService tokenService)
         {
             this.authorService = authorService;
             this.tokenService = tokenService;
@@ -47,8 +47,8 @@ namespace Cefalo.Media.MyBlog.Controllers
            // return Created("",null);
         }
 
-        [HttpPost("signin")]
 
+        [HttpPost("signin")]
         public async Task<ActionResult<AuthorDTO>> SignInAuthor(SignInAuthorDTO signInAuthorDTO)
         {
           
@@ -84,7 +84,7 @@ namespace Cefalo.Media.MyBlog.Controllers
 
         [HttpGet("{id:int}/{format?}")]
 
-        public async Task<IActionResult> GetAuthorById(int id)
+        public async Task<ActionResult<GetAuthorDTO>> GetAuthorById(int id)
         {
             var author = await authorService.GetAuthorByID(id);
             return Ok(author);

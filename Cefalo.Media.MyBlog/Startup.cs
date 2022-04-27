@@ -24,6 +24,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace Cefalo.Media.MyBlog
 {
@@ -58,7 +59,7 @@ namespace Cefalo.Media.MyBlog
             services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; });
             services.AddControllers().AddJsonOptions(options =>
             {
-            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            //options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             });
             
             // services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; }).AddNewtonsoftJson();
@@ -96,7 +97,11 @@ namespace Cefalo.Media.MyBlog
             app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
 
+          
+
             app.UseRouting();
+
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -107,5 +112,7 @@ namespace Cefalo.Media.MyBlog
                 endpoints.MapControllers();
             });
         }
+
+        
     }
 }

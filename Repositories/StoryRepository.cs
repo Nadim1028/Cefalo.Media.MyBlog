@@ -33,7 +33,8 @@ namespace Repositories
             //.ToListAsync();
 
             //var stories = await databaseContext.StoryTable.OrderBy(story => story.StoryTitle).ToListAsync();
-            var stories = await databaseContext.StoryTable.Skip((validFilter.PageNumber - 1) * validFilter.PageSize).Take(validFilter.PageSize).OrderBy(story => story.StoryTitle).ToListAsync();
+            var stories = await databaseContext.StoryTable.Skip((validFilter.PageNumber - 1) * validFilter.PageSize).Take(validFilter.PageSize).
+                OrderBy(story => story.PublishedDate).ToListAsync();
            
             //.Take(validFilter.PageSize)
 
