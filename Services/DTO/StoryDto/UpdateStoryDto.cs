@@ -12,5 +12,8 @@ namespace Services.DTO.StoryDto
         public int StoryId { get; set; }
         public string StoryTitle { get; set; }
         public string StoryBody { get; set; }
+        public DateTime PublishedDate { get; set; }
+
+
     }
 }

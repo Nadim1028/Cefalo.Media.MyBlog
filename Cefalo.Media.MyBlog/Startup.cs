@@ -24,6 +24,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace Cefalo.Media.MyBlog
 {
@@ -58,7 +59,7 @@ namespace Cefalo.Media.MyBlog
             services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; });
             services.AddControllers().AddJsonOptions(options =>
             {
-            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            //options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             });
             
             // services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; }).AddNewtonsoftJson();
@@ -82,16 +83,25 @@ namespace Cefalo.Media.MyBlog
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //app.UseMvcWithDefaultRoute();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cefalo.Media.MyBlog v1"));
             }
+
+            
+
             app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
 
+          
+
             app.UseRouting();
+
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -102,5 +112,7 @@ namespace Cefalo.Media.MyBlog
                 endpoints.MapControllers();
             });
         }
+
+        
     }
 }

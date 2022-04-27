@@ -25,11 +25,20 @@ namespace Repositories
           return true;
         }
 
-        public async Task<IEnumerable<Story>> GetStories()
+        public async Task<IEnumerable<Story>> GetStories(PaginationFilter validFilter)
         {
-            var stories = await databaseContext.StoryTable.OrderBy(story => story.StoryTitle).ToListAsync();
+            //var pagedData = await context.Customers
+            //.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+            //.Take(validFilter.PageSize)
+            //.ToListAsync();
 
-            foreach(var story in stories)
+            //var stories = await databaseContext.StoryTable.OrderBy(story => story.StoryTitle).ToListAsync();
+            var stories = await databaseContext.StoryTable.Skip((validFilter.PageNumber - 1) * validFilter.PageSize).Take(validFilter.PageSize).
+                OrderBy(story => story.PublishedDate).ToListAsync();
+           
+            //.Take(validFilter.PageSize)
+
+            foreach (var story in stories)
             {
                databaseContext.Entry(story).Reference(s => s.Author).Load();//explicit loading of navigational prop
             }

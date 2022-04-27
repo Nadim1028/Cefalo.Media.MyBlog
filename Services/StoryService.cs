@@ -17,8 +17,8 @@ namespace Services
     {
         private readonly IStoryRepository repository;
         private readonly IMapper mapper;
-        UpdateStoryDto dto;
-        List<UpdateStoryDto> listStories = new();
+        GetStoryDto dto;
+        List<GetStoryDto> listStories = new();
 
 
         public StoryService(IStoryRepository storyRepository, IMapper mapper)
@@ -54,20 +54,20 @@ namespace Services
             
         }
 
-        public async Task<IEnumerable<UpdateStoryDto>> GetStories()
+        public async Task<IEnumerable<GetStoryDto>> GetStories(PaginationFilter validFilter)
         {
             //config = new MapperConfiguration(cfg => cfg.CreateMap<Story, StoryDTO>());
             //mapper = config.CreateMapper();
 
-            IEnumerable<Story> stories = await repository.GetStories();
+            IEnumerable<Story> stories = await repository.GetStories(validFilter);
             
             foreach (Story s in stories)
             {
-                dto = mapper.Map<UpdateStoryDto>(s);
+                dto = mapper.Map<GetStoryDto>(s);
                 listStories.Add(dto);
             }
 
-            IEnumerable<UpdateStoryDto> dtoStories = listStories;
+            IEnumerable<GetStoryDto> dtoStories = listStories;
 
             return dtoStories;
         }

@@ -12,7 +12,7 @@ namespace Services.Interfaces
     public interface IStoryService
     {
         Task<bool> InsertStory(CreateStoryDto story,int authorId);
-        Task<IEnumerable<UpdateStoryDto>> GetStories();
+        Task<IEnumerable<GetStoryDto>> GetStories(PaginationFilter validFilter);
         Task<UpdateStoryDto> GetStoryByID(int storyId);
         Task<bool> DeleteStory(int storyId, int authorId);
         Task<bool> UpdateStory(UpdateStoryDto story, int authorId);

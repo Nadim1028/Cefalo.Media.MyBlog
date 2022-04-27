@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Database.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 //using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +16,13 @@ namespace Cefalo.Media.MyBlog.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class StoryController : Controller
+    public class StoriesController : Controller
     {
         private readonly IStoryService storyService;
         private readonly HttpContext httpContext;
 
 
-        public StoryController(IStoryService storyService, IHttpContextAccessor httpContextAccessor)
+        public StoriesController(IStoryService storyService, IHttpContextAccessor httpContextAccessor)
         {
             this.storyService = storyService;
             httpContext = httpContextAccessor.HttpContext;
@@ -61,14 +62,15 @@ namespace Cefalo.Media.MyBlog.Controllers
             else
                 return Ok(true);
         }
-
+           
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<CreateStoryDto>>> GetAllStories()
+        public async Task<ActionResult<IEnumerable<GetStoryDto>>> GetAllStories([FromQuery] PaginationFilter filter)
         {
-            
-            IEnumerable<UpdateStoryDto> stories =  await storyService.GetStories();
+            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+
+            IEnumerable<GetStoryDto> stories =  await storyService.GetStories(validFilter);
             return Ok(stories);
         }
 

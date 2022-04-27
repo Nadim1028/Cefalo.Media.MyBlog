@@ -10,7 +10,7 @@ namespace Repositories.Interfaces
     public interface IStoryRepository
     {
         Task<bool> InsertStory(Story story);
-        Task<IEnumerable<Story>>  GetStories();
+        Task<IEnumerable<Story>>  GetStories(PaginationFilter validFilter);
         Task<Story> GetStoryByID(int storyId);
         Task<bool> DeleteStory(int storyId);
         Task<bool> UpdateStory(Story story);
