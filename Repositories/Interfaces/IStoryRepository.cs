@@ -14,6 +14,5 @@ namespace Repositories.Interfaces
         Task<Story> GetStoryByID(int storyId);
         Task<bool> DeleteStory(int storyId);
         Task<bool> UpdateStory(Story story);
-        //void DeleteStory(Task<Story> story);
     }
 }

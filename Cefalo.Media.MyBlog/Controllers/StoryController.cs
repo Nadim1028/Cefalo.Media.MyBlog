@@ -1,8 +1,12 @@
-﻿using Database.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Services.DTO;
+using Services.DTO.StoryDto;
 using Services.Interfaces;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Cefalo.Media.MyBlog.Controllers
@@ -14,51 +18,86 @@ namespace Cefalo.Media.MyBlog.Controllers
     public class StoryController : Controller
     {
         private readonly IStoryService storyService;
-        
+        private readonly HttpContext httpContext;
 
 
-        public StoryController(IStoryService storyService)
+        public StoryController(IStoryService storyService, IHttpContextAccessor httpContextAccessor)
         {
             this.storyService = storyService;
+            httpContext = httpContextAccessor.HttpContext;
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateStory([FromBody] StoryDTO storyDTO)
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> CreateStory([FromBody] CreateStoryDto createStoryDto)
         {
-            await storyService.InsertStory(storyDTO);
+            if (createStoryDto == null )
+            {
+                return BadRequest(500);
+            }
+            var authorId =int.Parse(httpContext.User.FindFirstValue("AuthorId"));
+            await storyService.InsertStory(createStoryDto,authorId);
             return Created("", null);
         }
 
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> UpdateStory([FromBody] UpdateStoryDto updateStoryDto)
+        {
+            if (updateStoryDto == null)
+            {
+                return BadRequest(500);
+            }
+
+            var authorId = int.Parse(httpContext.User.FindFirstValue("AuthorId"));
+            var value = await storyService.UpdateStory(updateStoryDto,authorId);
+            if (value == false)
+            {
+                ModelState.AddModelError("", $"Something went wrong when updating the record  or Inavlid AuthorId");
+                return StatusCode(500, ModelState);
+            }
+            else
+                return Ok(true);
+        }
+
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StoryDTO>>> GetAllStories()
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<CreateStoryDto>>> GetAllStories()
         {
             
-            IEnumerable<StoryDTO> stories =  await storyService.GetStories();
+            IEnumerable<UpdateStoryDto> stories =  await storyService.GetStories();
             return Ok(stories);
         }
 
-        [HttpGet("{id:int}/{format?}")]
 
+      
+
+        [HttpGet("{id:int}/{format?}")]
+        [Authorize]
         public async Task<IActionResult> GetStoryById(int id)
         {
             var story = await storyService.GetStoryByID(id);
             return Ok(story);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateStory([FromBody] StoryDTO storyDTO)
-        {
-            await storyService.UpdateStory(storyDTO);
-            return Ok(true);
-        }
 
-        [HttpDelete("{id:int}")]
-
-        public async  Task<IActionResult> DeleteStory(int id)
+        [HttpDelete("{storyId:int}")]
+        [Authorize]
+        public async  Task<IActionResult> DeleteStory(int storyId)
         {
-            await storyService.DeleteStory(id);
-            return Ok(true);
+            var authorId = int.Parse(httpContext.User.FindFirstValue("AuthorId"));
+
+            var value = await storyService.DeleteStory(storyId, authorId);
+            if (value == false)
+            {
+                ModelState.AddModelError("", $" Inavlid Authorization");
+                return StatusCode(500, ModelState);
+            }
+           else
+                return Ok(true);
         }
 
     }

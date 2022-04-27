@@ -3,6 +3,7 @@ using Database.Models;
 using Repositories;
 using Repositories.Interfaces;
 using Services.DTO;
+using Services.DTO.StoryDto;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,8 +17,8 @@ namespace Services
     {
         private readonly IStoryRepository repository;
         private readonly IMapper mapper;
-        StoryDTO dto;
-        List<StoryDTO> listStories = new();
+        UpdateStoryDto dto;
+        List<UpdateStoryDto> listStories = new();
 
 
         public StoryService(IStoryRepository storyRepository, IMapper mapper)
@@ -27,21 +28,33 @@ namespace Services
         }
 
 
-        public async Task<bool> InsertStory(StoryDTO createStoryDto)
+        public async Task<bool> InsertStory(CreateStoryDto createStoryDto, int authorId)
         {
             //config = new MapperConfiguration(cfg => cfg.CreateMap<StoryDTO, Story>());
            // mapper = config.CreateMapper();
             var story = mapper.Map<Story>(createStoryDto);
+            story.AuthorId = authorId;
             return await repository.InsertStory(story);
         }
 
-        public async Task<bool> UpdateStory(StoryDTO createStoryDto)
+        public async Task<bool> UpdateStory(UpdateStoryDto updateStoryDto,int authorId)
         {
-            var story = mapper.Map<Story>(createStoryDto);
-            return await repository.UpdateStory(story);
+            var searchedStory = await repository.GetStoryByID(updateStoryDto.StoryId);
+
+            if(searchedStory.AuthorId != authorId)
+            {
+                return false;
+            }
+            else
+            {
+                var story = mapper.Map<Story>(updateStoryDto);
+                story.AuthorId=authorId;
+                return await repository.UpdateStory(story);
+            }
+            
         }
 
-        public async Task<IEnumerable<StoryDTO>> GetStories()
+        public async Task<IEnumerable<UpdateStoryDto>> GetStories()
         {
             //config = new MapperConfiguration(cfg => cfg.CreateMap<Story, StoryDTO>());
             //mapper = config.CreateMapper();
@@ -50,30 +63,33 @@ namespace Services
             
             foreach (Story s in stories)
             {
-                dto = mapper.Map<StoryDTO>(s);
+                dto = mapper.Map<UpdateStoryDto>(s);
                 listStories.Add(dto);
             }
 
-            IEnumerable<StoryDTO> dtoStories = listStories;
+            IEnumerable<UpdateStoryDto> dtoStories = listStories;
 
             return dtoStories;
         }
 
-        public async Task<StoryDTO> GetStoryByID(int storyId)
+        public async Task<UpdateStoryDto> GetStoryByID(int storyId)
         {
             var story = await repository.GetStoryByID(storyId);
-           StoryDTO storyDto = mapper.Map<StoryDTO>(story);
+           UpdateStoryDto storyDto = mapper.Map<UpdateStoryDto>(story);
             return storyDto;
         }
 
         
 
-        public async Task<bool> DeleteStory(int storyId)
+        public async Task<bool> DeleteStory(int storyId, int authorId)
         {
-          
-            //StoryDTO storyDto =  await GetStoryByID(storyId);
-            //var story = mapper.Map<Story>(storyDto);
-            return await repository.DeleteStory(storyId);
+            var searchedStory = await repository.GetStoryByID(storyId);
+            if (searchedStory.AuthorId != authorId)
+            {
+                return false;
+            }
+            else
+                return await repository.DeleteStory(storyId);
 
         }
 

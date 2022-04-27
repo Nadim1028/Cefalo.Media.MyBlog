@@ -19,6 +19,11 @@ using Services.Interfaces;
 using Services;
 using Services.Mapper;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Cefalo.Media.MyBlog
 {
@@ -41,12 +46,13 @@ namespace Cefalo.Media.MyBlog
             services.AddAutoMapper(typeof(BlogProfile));
             services.SwaggerConfigurationServices();
 
+            services.AddScoped<ITokenService,TokenService>();
             services.AddScoped<IStoryRepository, StoryRepository>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
 
             services.AddScoped<IStoryService, StoryService>();
             services.AddScoped<IAuthorService, AuthorService>();
-
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddControllers().AddXmlSerializerFormatters();
             services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; });
@@ -58,7 +64,20 @@ namespace Cefalo.Media.MyBlog
             // services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; }).AddNewtonsoftJson();
             services.AddControllers().AddXmlDataContractSerializerFormatters();
 
-        }
+
+            //authentication service
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"])),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
+        }                                                              
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -73,8 +92,10 @@ namespace Cefalo.Media.MyBlog
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
+
+
 
             app.UseEndpoints(endpoints =>
             {
