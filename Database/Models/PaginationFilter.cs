@@ -13,12 +13,12 @@ namespace Database.Models
         public PaginationFilter()
         {
             this.PageNumber = 1;
-            this.PageSize = 10;
+            this.PageSize = 8;
         }
         public PaginationFilter(int pageNumber, int pageSize)
         {
             this.PageNumber = pageNumber < 1 ? 1 : pageNumber;
-            this.PageSize = pageSize > 10 ? 10 : pageSize;
+            this.PageSize = pageSize > 8 ? 8 : pageSize;
         }
     }
 

@@ -62,20 +62,19 @@ namespace Cefalo.Media.MyBlog.Controllers
             else
                 return Ok(true);
         }
-           
 
-        [HttpGet]
+
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<GetStoryDto>>> GetAllStories([FromQuery] PaginationFilter filter)
+        [HttpGet]
+        public async Task<IActionResult> GetStories([FromQuery] StoryParamDto storyParamDto)
         {
-            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+            var paginatedStories = await storyService.GetPaginatedStories(storyParamDto);
 
-            IEnumerable<GetStoryDto> stories =  await storyService.GetStories(validFilter);
-            return Ok(stories);
+            return Ok(paginatedStories);
         }
 
 
-      
+
 
         [HttpGet("{id:int}/{format?}")]
         [Authorize]
@@ -100,6 +99,16 @@ namespace Cefalo.Media.MyBlog.Controllers
             }
            else
                 return Ok(true);
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("search", Name = "SearchStory")]
+        public async Task<IActionResult> SearchStories([FromQuery] SearchingDto searchingDto)
+        {
+            var paginatedSearchedStories = await storyService.GetPaginatedSearchedStories(searchingDto);
+
+            return Ok(paginatedSearchedStories);
         }
 
     }

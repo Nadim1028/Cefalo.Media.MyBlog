@@ -24,17 +24,100 @@ namespace Repositories
           databaseContext.SaveChanges();
           return true;
         }
+        
 
-        public async Task<IEnumerable<Story>> GetStories(PaginationFilter validFilter)
+
+        public async Task<IEnumerable<Story>> GetStoriesBySearch(int pageNumber, int pageSize, string searchString)
         {
-            //var pagedData = await context.Customers
-            //.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-            //.Take(validFilter.PageSize)
-            //.ToListAsync();
+            int numericValue;
+            DateTime dateTime;
 
-            //var stories = await databaseContext.StoryTable.OrderBy(story => story.StoryTitle).ToListAsync();
-            var stories = await databaseContext.StoryTable.Skip((validFilter.PageNumber - 1) * validFilter.PageSize).Take(validFilter.PageSize).
-                OrderBy(story => story.PublishedDate).ToListAsync();
+            bool isNum = int.TryParse(searchString, out numericValue);
+            bool isDateTime = DateTime.TryParse(searchString, out dateTime);
+
+            return await databaseContext.StoryTable
+                .Where(
+                    story =>
+                        (isNum? story.AuthorId.Equals(numericValue) : false) || //Convert.ToInt32(searchString)
+                        (isNum ? story.StoryId.Equals(numericValue) : false) ||// story.StoryId.Equals(searchString) ||
+                        story.StoryTitle.Contains(searchString) ||
+                        story.StoryBody.Contains(searchString) ||
+                         (isDateTime ? story.PublishedDate.Equals(dateTime) : false) ||
+                        story.Author.UserName.Contains(searchString) 
+                )
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(story => story.Author)
+                .ToListAsync();
+        }
+
+
+
+        public async Task<int> GetTotalStoriesBySearch(string searchString)
+        {
+
+            int numericValue;
+            DateTime dateTime;
+            bool isNum = int.TryParse(searchString, out numericValue);
+            bool isDateTime = DateTime.TryParse(searchString, out dateTime);
+
+            return await databaseContext.StoryTable
+                .Where(
+                    story =>
+                        (isNum ? story.AuthorId.Equals(numericValue) : false) ||
+                         (isNum ? story.StoryId.Equals(numericValue) : false) ||
+                        story.StoryTitle.Contains(searchString) ||
+                        story.StoryBody.Contains(searchString) ||  (isDateTime ? story.PublishedDate.Equals(dateTime ) : false) ||
+                        story.Author.UserName.Contains(searchString)
+                )
+                .CountAsync();
+        }
+
+
+        public async Task<IEnumerable<Story>> GetStoriesByAuthor(int pageNumber, int pageSize, int authorId)
+        {
+            return await databaseContext.StoryTable
+                .Where(story => story.AuthorId == authorId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(story => story.Author)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetTotalStoriesByAuthor(int authorId)
+        {
+            return await databaseContext.StoryTable
+                .Where(story => story.AuthorId == authorId)
+                .CountAsync();
+        }
+
+        public async Task<int> GetTotalStories()
+        {
+            return await databaseContext.StoryTable.CountAsync();
+        }
+
+
+        public async Task<IEnumerable<Story>> GetAllStories()
+        {
+            var stories = await databaseContext.StoryTable.OrderBy(story => story.StoryTitle).ToListAsync();
+
+            foreach (var story in stories)
+            {
+                databaseContext.Entry(story).Reference(s => s.Author).Load();
+            }
+
+            return stories;
+        }
+        public async Task<IEnumerable<Story>> GetStories(int pageNumber, int pageSize)
+        {
+         
+
+           //var stories = await databaseContext.StoryTable.OrderBy(story => story.StoryTitle).ToListAsync();
+            var stories = await databaseContext.StoryTable
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .OrderBy(story => story.PublishedDate)
+                .ToListAsync();
            
             //.Take(validFilter.PageSize)
 

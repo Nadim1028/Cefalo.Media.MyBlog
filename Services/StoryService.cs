@@ -54,13 +54,13 @@ namespace Services
             
         }
 
-        public async Task<IEnumerable<GetStoryDto>> GetStories(PaginationFilter validFilter)
+        public async Task<IEnumerable<GetStoryDto>> GetStories( )
         {
             //config = new MapperConfiguration(cfg => cfg.CreateMap<Story, StoryDTO>());
             //mapper = config.CreateMapper();
 
-            IEnumerable<Story> stories = await repository.GetStories(validFilter);
-            
+            IEnumerable<Story> stories = await repository.GetAllStories();
+
             foreach (Story s in stories)
             {
                 dto = mapper.Map<GetStoryDto>(s);
@@ -71,6 +71,99 @@ namespace Services
 
             return dtoStories;
         }
+
+
+        public async Task<PaginationToReturnDto> GetPaginatedStories(StoryParamDto storyParamDto)
+        {
+            var pageNumber = storyParamDto.PageNumber;
+            var pageSize = storyParamDto.PageSize;
+
+            var stories =(storyParamDto.AuthorId >0)
+                ? await repository.GetStoriesByAuthor(pageNumber, pageSize, storyParamDto.AuthorId) : 
+                await repository.GetStories(pageNumber, pageSize) ;
+
+            // var storiesDto = _mapper.Map<IEnumerable<StoryToReturnDto>>(stories);
+
+            var storiesDto = new List<GetStoryDto>();
+
+            foreach (var story in stories)
+            {
+                var storyDto = new GetStoryDto
+                {
+                    StoryId = story.StoryId,
+                    AuthorId = story.AuthorId,
+                    StoryBody = story.StoryBody,
+                    PublishedDate = story.PublishedDate,
+                    StoryTitle = story.StoryTitle
+                };
+
+                storiesDto.Add(storyDto);
+            }
+
+            var totalStories = (storyParamDto.AuthorId > 0)
+                ? await repository.GetTotalStoriesByAuthor(storyParamDto.AuthorId)
+                : await repository.GetTotalStories() ; 
+
+            var totalPages = (int)Math.Ceiling((decimal)totalStories / pageSize);
+
+            return new PaginationToReturnDto
+            {
+                Data = storiesDto,
+                Count = totalStories,
+                TotalPage = totalPages,
+                CurrentPage = pageNumber
+            };
+        }
+
+        public async Task<object> GetPaginatedSearchedStories(SearchingDto searchingDto)
+        {
+            if (String.IsNullOrEmpty(searchingDto.SearchString) ||
+                String.IsNullOrWhiteSpace(searchingDto.SearchString))
+            {
+                return new PaginationToReturnDto
+                {
+                    Data = Array.Empty<GetStoryDto>(),
+                    Count = 0,
+                    TotalPage = 0,
+                    CurrentPage = 1
+                };
+            }
+
+            var pageNumber = searchingDto.PageNumber;
+            var pageSize = searchingDto.PageSize;
+
+            var stories =
+                await repository.GetStoriesBySearch(pageNumber, pageSize, searchingDto.SearchString);
+
+            var storiesDto = new List<GetStoryDto>();
+
+            foreach (var story in stories)
+            {
+                var storyDto = new GetStoryDto
+                {
+                    StoryId = story.StoryId,
+                    AuthorId = story.AuthorId,
+                    StoryBody = story.StoryBody,
+                    PublishedDate = story.PublishedDate,
+                    StoryTitle = story.StoryTitle
+                };
+
+                storiesDto.Add(storyDto);
+            }
+
+            var totalStories = await repository.GetTotalStoriesBySearch(searchingDto.SearchString);
+
+            var totalPages = (int)Math.Ceiling((decimal)totalStories / pageSize);
+
+            return new PaginationToReturnDto
+            {
+                Data = storiesDto,
+                Count = totalStories,
+                TotalPage = totalPages,
+                CurrentPage = pageNumber
+            };
+        }
+
 
         public async Task<UpdateStoryDto> GetStoryByID(int storyId)
         {
